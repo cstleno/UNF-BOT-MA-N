@@ -27,20 +27,24 @@ def run_web_server():
 
 @bot.event
 async def on_ready():
-    print(f"{bot.user} olarak giriş yapıldı.")
+    # Bu satır printlerin kesinlikle loglara düşmesini garanti eder
+    print(f"{bot.user} olarak Discord'a basariyla giris yapildi!", flush=True)
     
-    # Belirttiğiniz ses kanalını buluyoruz
+    # Kanalı ID ile çekiyoruz
     channel = bot.get_channel(VOICE_CHANNEL_ID)
     
-    if channel and isinstance(channel, discord.VoiceChannel):
-        try:
-            # Ses kanalına bağlanma komutu
-            await channel.connect()
-            print(f"Başarıyla '{channel.name}' ses kanalına bağlanıldı.")
-        except Exception as e:
-            print(f"Ses kanalına bağlanırken hata oluştu: {e}")
-    else:
-        print("Geçersiz kanal ID'si veya kanal bir ses kanalı değil!")
+    if channel is None:
+        print(f"HATA: {VOICE_CHANNEL_ID} ID'li kanal bulunamadi! Botun bu kanalin oldugu sunucuda oldugundan ve kanali gorme yetkisi oldugundan emin olun.", flush=True)
+        return
+
+    print(f"Kanal bulundu. Adi: {channel.name}, Turu: {type(channel)}", flush=True)
+    
+    try:
+        print("Ses kanalina baglanma istegi gonderiliyor...", flush=True)
+        await channel.connect()
+        print(f"TEBRIKLER: '{channel.name}' ses kanalina basariyla baglanildi.", flush=True)
+    except Exception as e:
+        print(f"BAGLANTI HATASI: Ses kanalina baglanirken bir sorun olustu: {e}", flush=True)
 
 if __name__ == "__main__":
     # Web sunucusunu arka planda başlatıyoruz
